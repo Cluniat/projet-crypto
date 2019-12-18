@@ -18,5 +18,10 @@ Protocole :
 - **A** renvoie les clauses calculées en les permuttant aléatoirement (et en ajoutant des clauses fausses donc ≠ 0)
 - **B** décrypte chaque clause puis les multiplie entre elles, si le résultat final est **0** alors F(xi,..) = True
 
+#### Pour aller plus loin
+
+- Essayer de voir comment **B** peut récupérer la fonction de **A**
+- Est-ce que **A** peut récupérer les valeurs de **B** ?
+
 ### Mariage cryptographique
 
