@@ -7,16 +7,21 @@
 Voir code (classe Multiplication)
 
 #### Q2
-Par la propriété homomorphique de Paillier, on trouve retrouve facilement que a1 = eα + δ de par sa construction.  
+Par la propriété homomorphique de Paillier, on trouve retrouve facilement que a = eα + δ de par sa construction.  
 De plus on a :  
-a2 = Paillier.Decrypt(([β]^a [π]^−1 [γ]^−e mod n2 ))  
-=> a2 = aβ - π - eγ    Par les propriétés homomorphique de Paillier  
-=> a2 = (eα + δ)β - δβ - eαβ  
-=> a2 = eαβ + δβ - δβ - eαβ  
-=> a2 = 0
+a' = Paillier.Decrypt(([β]^a [π]^−1 [γ]^−e mod n2 ))  
+=> a' = aβ - π - eγ    Par les propriétés homomorphique de Paillier  
+=> a' = (eα + δ)β - δβ - eαβ  
+=> a' = eαβ + δβ - δβ - eαβ  
+=> a' = 0
 
 #### Q3
-
+Après le protocole, les seules informations décrypté qu'a obtenu Bob sont a et a'.  
+Or nous avons montré à la question précédente que a' = 0 si Alice respecte le protocole, donc il ne peut pas en extraire
+ d'infomation. Nous avons également montré que a = eα + δ. Or δ est choisi aléatoirement par Alice et la seule 
+ information que possède Bob est son encryption avec Pailler. Comme Paillier est sémantiquement sûr, il ne peut donc 
+ obtenir aucune information sur δ, et donc de fait aucune information non plus sur α. Pour β et γ, il n'obtient que 
+ leurs valeurs encrypté par Paillier et ne peut donc pas en tirer d'information.
 
 #### Q4
 En effectuant les vérification 4.a et 4.b, Bob encrypte a et a' en utilisant le r donné par la fonction de décryption au 
