@@ -3,6 +3,39 @@
 ## Questions
 
 ### Protocole Multiplication
+#### Q1
+Voir code (classe Multiplication)
+
+#### Q2
+Par la propriété homomorphique de Paillier, on trouve retrouve facilement que a1 = eα + δ de par sa construction.  
+De plus on a :  
+a2 = Paillier.Decrypt(([β]^a [π]^−1 [γ]^−e mod n2 ))  
+=> a2 = aβ - π - eγ    Par les propriétés homomorphique de Paillier  
+=> a2 = (eα + δ)β - δβ - eαβ  
+=> a2 = eαβ + δβ - δβ - eαβ  
+=> a2 = 0
+
+#### Q3
+
+
+#### Q4
+En effectuant les vérification 4.a et 4.b, Bob encrypte a et a' en utilisant le r donné par la fonction de décryption au 
+lieu d'en regénérer un aléatoirement. Donc il doit normalement obtenir la même encryption que qu'Alice. Comme il compare
+cette encryption avec le résultat du calcul qu'est sensé avoir effectué Alice avant la décryption, Si a et a' encrypte les bonnes valeurs,
+il est sensé obtenir le même résultat.
+
+#### Q5
+Pas encore vraiment résolue
+
+#### Q6
+D'après la question précédente, si γ est différent de αβ et que les vérifications 4.a et 4.b sont valide, alors a' est différent de 0 avec une probabilité proche de 1.  
+Or si a' est différent de 0, le protocole échoue.  
+Donc si γ est différent de αβ, le protocole échoue avec une probabilité proche de 1.
+
+#### Q7
+On peut facilement utiliser le protocole MultiProof dans le protocole Mutliplication pour sécuriser l'étape 2.  
+En effet cela permet à Bob d'ếtre sur que Alice lui envoie bien une encryption de (x + r)(y + s).  
+Pour cela, il suffit d'appliquer le protocole MultiProof en prenant α = (x + r) et β = (y + s)
 
 ### Exercice 105
 
