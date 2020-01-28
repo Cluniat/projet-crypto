@@ -30,7 +30,7 @@ public class Paillier {
         return new Keys(n, rho);
     }
 
-    public BigInteger encrypt(BigInteger message, Keys keys) {
+    public static BigInteger encrypt(BigInteger message, Keys keys) {
         Random rand = new Random();
         BigInteger r = new BigInteger(keys.pk().bitLength(), 1, rand).mod(keys.pk());
         return message.multiply(keys.pk())
@@ -39,7 +39,7 @@ public class Paillier {
                 .mod(keys.pk().pow(2));
     }
 
-    public BigInteger decrypt(BigInteger encryptedMessage, Keys keys) {
+    public static BigInteger decrypt(BigInteger encryptedMessage, Keys keys) {
         BigInteger r = encryptedMessage.modPow(keys.sk(), keys.pk());
         return  encryptedMessage.multiply(r.modPow(keys.pk(), keys.pk().pow(2)).modInverse(keys.pk().pow(2)))
                 .mod(keys.pk().pow(2))
@@ -49,29 +49,28 @@ public class Paillier {
 
     // ====================== OPERATIONS ===========================
 
-    public BigInteger add(BigInteger encryption1, BigInteger encryption2, Keys keys) {
+    public static BigInteger add(BigInteger encryption1, BigInteger encryption2, Keys keys) {
         return encryption1.multiply(encryption2).mod(keys.pk().pow(2));
     }
 
-    public BigInteger substract(BigInteger encryption1, BigInteger encryption2, Keys keys) {
+    public static BigInteger substract(BigInteger encryption1, BigInteger encryption2, Keys keys) {
         // Substraction is just the opposite of addition
-        return add(encryption1, mult(encryption2, BigInteger.ONE.negate(), keys), keys);
+        return add(encryption1, encryption2.modPow(BigInteger.ONE.negate(), keys.pk().pow(2)), keys);
     }
 
-    public BigInteger mult(BigInteger encryption, BigInteger factor, Keys keys) {
+    public static BigInteger mult(BigInteger encryption, BigInteger factor, Keys keys) {
         return encryption.modPow(factor, keys.pk().pow(2));
     }
 
 
     // ===============================================================================
 
-    public ArrayList<BigInteger> decryptPlus(BigInteger encryptedMessage) {
+    public static BigInteger[] decryptPlus(BigInteger encryptedMessage, Keys keys) {
         // FIXME J'ai dû oublier des trucs parce que je vois pas ce que ça fait...
-        ArrayList<BigInteger> response = new ArrayList<>();
-        BigInteger r = encryptedMessage.modPow(sk, pk);
-        BigInteger m = encryptedMessage.multiply(r.modPow(pk, pk.pow(2)).modInverse(pk.pow(2))).mod(pk.pow(2)).subtract(BigInteger.ONE).divide(pk);
-        response.add(r);
-        response.add(m);
+        //ArrayList<BigInteger> response = new ArrayList<>();
+        BigInteger r = encryptedMessage.modPow(keys.sk(), keys.pk());
+        BigInteger m = encryptedMessage.multiply(r.modPow(keys.pk(), keys.pk().pow(2)).modInverse(keys.pk().pow(2))).mod(keys.pk().pow(2)).subtract(BigInteger.ONE).divide(keys.pk());
+        BigInteger[] response = new BigInteger[] {m, r};
         return response;
     }
 
@@ -103,6 +102,31 @@ public class Paillier {
     public BigInteger decrypt(BigInteger encryptedMessage) {
         return  decrypt(encryptedMessage, new Keys(this.pk, this.sk));
     }
+
+    public static BigInteger encrypt(BigInteger message, BigInteger pk) {
+        return encrypt(message, new Keys(pk, null));
+    }
+
+    public static BigInteger decrypt(BigInteger encryptedMessage, BigInteger pk, BigInteger sk) {
+        return  decrypt(encryptedMessage, new Keys(pk, sk));
+    }
+
+    public static BigInteger[] decryptPlus(BigInteger encryptedMessage, BigInteger pk, BigInteger sk) {
+        return decryptPlus(encryptedMessage, new Keys(pk, sk));
+    }
+
+    public static BigInteger add(BigInteger encryption1, BigInteger encryption2, BigInteger pk) {
+        return add(encryption1, encryption2, new Keys(pk, null));
+    }
+
+    public static BigInteger mult(BigInteger encryption, BigInteger factor, BigInteger pk) {
+        return mult(encryption, factor, new Keys(pk, null));
+    }
+
+    public static BigInteger substract(BigInteger encryption1, BigInteger encryption2, BigInteger pk) {
+        return substract(encryption1, encryption2, new Keys(pk, null));
+    }
+
 
     /**
      * @deprecated Kept for compatibility
