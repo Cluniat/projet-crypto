@@ -83,26 +83,30 @@ Protocole :
 
 *Bob (**B**) a un bracelet électronique qui connaît sa position (xB, yB) à tout moment. Alice (**A**) doit pouvoir savoir à tout moment si **B** est à moins de 100 mètres, sans connaître la position de **B**.*
 
-Pour l'instant, on a 2 protocoles (à voir lequel est le mieux)
+Pour répondre à ce problème nous proposons deux protocoles, qui ont chacun leurs limites :
 
 #### Protocole 1
 
-On suppose que le bracelet est fiable (**B** ne l'a pas piraté et **A** peut lui envoyer des valeurs sans que qui que ce soit ne puisse récupérer ces valeurs) et qu'il dispose d'une faible puissance de calcul.
+On suppose que :
+- Le bracelet est fiable (**B** ne peut pas le pirater (protocole codé en dur, système de sécurité sur le bracelet empêchant Bob de l'ouvrir sans provoquer d'alarme, etc..)
+- Le bracelet dispose d'une faible puissance de calcul.
 
 Protocole :
-- **A** envoie à **B** (à son bracelet) sa position (xA, yA) non encryptée
+- **A** envoie à **B** (à son bracelet) sa position (xA, yA) de manière sécurisée (encryption que le bracelet pourra décrypter)
 - **B** calcule la différence en *x* et la différence en *y*
-- Si *x > 100* ou *y > 100*, **B** renvoie Faux (on est sûr que la distance est supérieure à 141 mètres)
+- Si *x > 100* ou *y > 100*, **B** renvoie Faux (on est sûr que la distance est supérieure à √(100²+100²) = 141 mètres)
 - Sinon **B** calcule *x² + y²* et teste si le résultat est inférieur à *10000* (100²)
 - Si *x² + y² < 10 000*, alors **B** renvoie sa position, sinon **B** renvoie Faux
 
-Principal problème : la puissance de calcul du bracelet de **B**, c'est notamment pour ça qu'on ne calcule pas les carrés si ce n'est pas utile.
+Limites : On suppose une puissance de calcul du bracelet de **B**, c'est notamment pour ça qu'on ne calcule pas les carrés si ce n'est pas utile. De plus Alice doit envoyer sa position au bracelet, il faut donc que celui-ci soit vraiment fiable.
 
 #### Protocole 2
 
+On suppose que bracelet dispose d'une faible puissance de calcul.
+
 Protocole :
-- **A** envoie à **B** les encryptions : XA, YA, XA² (= Paillier.Encrypt(xA²) ), YA²
+- **A** envoie à **B** les encryptions : XA, YA, XA² (= Paillier.Encrypt(xA²) ), YA².
 - **B** calcule et renvoie *D = XA² + YA² + Paillier.Encrypt( xB² + yB² ) + XA ⊗ (-2 xB) + YA ⊗ (-2 yB)* (sa distance par rapport à **A**)
 - **A** décrypte *D* et vérifie si celle-ci est inférieure à 10 000 (100²)
 
-Problème : **A** connaît sa distance avec **B**
+Problème : **A** connaît sa distance avec **B**, ce qui donne une information sur la position de **B**, ce que l'on peut vouloir éviter, si celui-ci n'est pas à moins de 100 mètres de **A**.
