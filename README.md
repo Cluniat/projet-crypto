@@ -115,9 +115,9 @@ Protocole :
   - *D² = Paillier.Encrypt((xA - xB)² + (yA - yB)²)* 
   - *D² = Paillier.Encrypt(xA² + yA² + xB² + yB² - 2.xA.xB - 2.yA.yB)* 
   - *D² = Paillier.Encrypt(xA²) + Paillier.Encrypt(yA²) + Paillier.Encrypt(xB² + yB²) + Paillier.Encrypt(-2.xA.xB) + Paillier.Encrypt(-2.yA.yB)*
-  - *D² = XA² + YA² + Paillier.Encrypt( xB² + yB²) + (-2 xB).XA + (-2 yB).YA* 
+  - *D² = XA² + YA² + Paillier.Encrypt( xB² + yB²) + (-2 xB).XA + (-2 yB).YA*
 - **A** décrypte *D²* et vérifie si celle-ci est inférieure à 10 000 (100²)
 
 Limites : 
-- On suppose une puissance de calcul du bracelet de **B**. 
+- On suppose une puissance de calcul du bracelet de **B**. Ici, le bracelet n'a pas besoin de calculer les encryptions et carré des coordonnées de A, ce qui réduit déjà la puissance nécessaire.
 - **A** connaît sa distance avec **B**, ce qui donne une information sur la position de **B**, ce que l'on peut vouloir éviter, si celui-ci n'est pas à moins de 100 mètres de **A**.
