@@ -65,19 +65,39 @@ Pour cela, il suffit d'appliquer le protocole MultiProof en prenant α = (x + r)
 *Bob (**B**) a des valeurs booléennes, Alice (**A**) une fonction qui prend des valeurs booléennes et donne un résultat (booléen).  
 Les clauses sont sous la forme : x1 ^ x2 ^ x3 v ¬x1 ^ x5 ^ ¬x4 v ...*
 
-Protocole :
-- **B** chiffre les valeurs et envoie à **A**
-- **A** calcule chaque clause disjonctive séparément (les suites de . ^ . ^ .)
-- - Si ¬X alors, remplacer par **Paillier.Encrypt(1) ⊝ X**
-- - **A** calcule la somme des Xi et soustrait le nombre total de Xi (ex : X1 ⊕ X2 ⊕ X3 ⊝ 3 = X)
-- - X = 0 si c'est vrai, **A** les multiplie donc par un nombre aléatoire pour brouiller les résultats faux
-- **A** renvoie les clauses calculées en les permuttant aléatoirement (et en ajoutant des clauses fausses donc ≠ 0)
+L'objectif du protocole est de permettre à Bob d'obtenir le résultat de la DNF avec les valeurs booléenes qu'il possède.  
+
+Dans le cas idéal, Bob obtient le résultat final sans avoir la moindre information sur la DNF et Alice n'a obtenu aucune
+information sur les valeurs de Bob.  
+Pour arriver à se rapprocher autant que possible du cas idéal, nous proposons le protocole ci-dessous :
+
+- **B** génère un couple de clés privé/public pour Paillier et transmet la clé publique à **A**
+- **B** chiffre les valeurs et les envoie à **A**
+- **A** calcule chaque clause disjonctive séparément (les suites de . ^ . ^ .) avec la méthode suivante :
+- - Si il y a un ¬X alors Alice le remplacer par **Paillier.Encrypt(1) ⊝ X**. On obtient de cette manière une négation de X.
+- - **A** calcule la somme des Xi et soustrait le nombre total de Xi (ex : X1 ⊕ X2 ⊕ X3 ⊝ 3 = X). La clause est donc vraie si et seulement si X = 0.
+En effet, la clause étant composée seulement de ^, X est vrai si X1, X2 et X3 sont vrai (X1 + X2 + X3 = 3).
+- Pour que **B** ne puisse pas obtenir d'information sur le résultat précis des clauses, **A** les multiplie par un nombre aléatoire pour brouiller les résultats faux.
+**B** pourra toujours savoir les clauses vérifier mais n'aura aucune information sur les clauses fausses.
+- Pour ne pas donner d'information sur le nombre de clauses, **A** renvoie les clauses calculées en les permuttant aléatoirement (et en ajoutant des clauses fausses (donc ≠ 0)
 - **B** décrypte chaque clause puis les multiplie entre elles, si le résultat final est **0** alors F(xi,..) = True
 
-#### Pour aller plus loin
+#### Limite du protocole
 
-- Essayer de voir comment **B** peut récupérer la fonction de **A**
-- Est-ce que **A** peut récupérer les valeurs de **B** ?
+Par rapport au cas idéal, ce protocole présente certains défauts, mais il présente plusieurs très bon points :
+
+  
+Pour la sécurité des informations de Bob, ce protocole correspond parfaitement au cas idéal : En effet Alice n'obtient
+que des encryptions des valeurs de Bob, donc elle n'a aucun moyen d'en déduire les valeurs envoyé par Bob car le cryptosystème
+de Paillier est sémantiquement sûr.  
+Par contre avec ce protocole, Bob arrive à obtenir plus d'information sur la DNF que ce qu'il en obtient dans le cas idéal.
+En effet il peut pour chaque calcul de la DNF (exécution du protocole) obtenir le nombre exacte de clauses vraies.
+Comme il ne connait pas le nombre total de clause ni lequelles sont vraies, il lui est probablement impossible d'obtenir 
+des informations précises sur la DNF. Il peut donc seulement effectué des suppositions sur le contenu de certaines clauses. 
+Mais il ne pourra pas avoir plus de certitudes que dans le cas idéal.
+
+Avec ce protocole, Alice peut se sentir lésé car Bob obtient plus d'information que dans le cas idéal, mais Bob devrait être satisfait par ce protocole.
+
 
 ### Mariage cryptographique
 
