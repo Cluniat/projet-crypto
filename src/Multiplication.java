@@ -10,6 +10,9 @@ public class Multiplication {
     }
 
     public static BigInteger[][] multi1(BigInteger pk, BigInteger X, BigInteger Y) {
+        // Première étape du protocole multiplication :
+        // Bob génère 2 nombre aléatoire qu'il va ajouter à X et Y et envoyer à Alice.
+        // On retourne simplement r et s pour pouvoir les stocker pour la suite du protocole, mais Bob ne les transmet pas à Alice
         Random rand = new Random();
         BigInteger r = new BigInteger(pk.bitLength(), 1, rand).mod(pk);
         BigInteger s = new BigInteger(pk.bitLength(), 1, rand).mod(pk);
@@ -22,6 +25,9 @@ public class Multiplication {
     }
 
     public static BigInteger multi2(BigInteger pk, BigInteger sk, BigInteger encryptedSumX, BigInteger encryptedSumY) {
+        // Alice multiplie les valeurs que lui envoie Bob en les décryptant avant de les renvoyer.
+        // Ici Alice peut ne pas respecter le protocole et renvoyer une valeur différente à Bob.
+        // Le protocole multProof sert à verifier cette étape.
         BigInteger sumX = Paillier.decrypt(encryptedSumX, pk, sk);
         BigInteger sumY = Paillier.decrypt(encryptedSumY, pk, sk);
         BigInteger prod = sumX.multiply(sumY).mod(pk);
@@ -30,6 +36,8 @@ public class Multiplication {
     }
 
     public static BigInteger multi3(BigInteger pk, BigInteger prod, BigInteger X, BigInteger Y, BigInteger r, BigInteger s) {
+        // Bob renvoie à cette étape une encryption du résultat finale de la multiplication.
+        // Il suffit juste à Alice de le décrypter pour obtenir le résultat de la multiplication
         BigInteger sX = Paillier.mult(X, s, pk);
         BigInteger rY = Paillier.mult(Y, r, pk);
         BigInteger rs = s.multiply(r).mod(pk);
@@ -41,6 +49,8 @@ public class Multiplication {
     }
 
     public static BigInteger[] multiProof1(BigInteger pk, BigInteger sk, BigInteger beta){
+        // Première étape du protocole permettant de vérifier que le protocole est bien respecté par Alice.
+        // Alice génère 1 nombre aléatoire delta et envoie l'encryption de delta et de delta * beta à Bob
         Random rand = new Random();
         BigInteger delta = new BigInteger(pk.bitLength(), 1, rand).mod(pk);
         beta = Paillier.decrypt(beta, pk, sk);
@@ -52,12 +62,15 @@ public class Multiplication {
     }
 
     public static BigInteger multiProof2(BigInteger pk) {
+        // Bob génère un nombre aléatoire et l'envoie à Alice
         Random rand = new Random();
         BigInteger e = new BigInteger(pk.bitLength() - 1, 1, rand);
         return e;
     }
 
     public static BigInteger[][] multiProof3(BigInteger alpha, BigInteger beta, BigInteger gamma, BigInteger delta, BigInteger e, BigInteger pi, BigInteger pk, BigInteger sk) {
+        // Alice calcule les 2 messages decrypté decrit dans le protocole ainsi que les nombres aléatoires ayant servi à l'encryption.
+        // Elle envoie ensuite ces informations à Bob.
         BigInteger encrypteda1 = alpha;
         encrypteda1 = Paillier.mult(encrypteda1, e, pk);
         encrypteda1 = Paillier.add(encrypteda1, delta, pk);
@@ -75,6 +88,7 @@ public class Multiplication {
 
     public static boolean multiProof4(BigInteger a1, BigInteger r1, BigInteger a2, BigInteger r2, BigInteger encryptedAlpha,
                                       BigInteger encryptedBeta, BigInteger encryptedGamma, BigInteger encryptedDelta, BigInteger encryptedPi, BigInteger e, BigInteger pk) {
+        // Bob verifie si Alice a bien respecté le protocole. Si une des vérification échoue, il quitte le protocole.
         BigInteger enc1 = a1.multiply(pk)
                 .add(BigInteger.ONE)
                 .multiply(r1.modPow(pk, pk.pow(2)))
@@ -100,7 +114,8 @@ public class Multiplication {
     }
 
     public static void main(String[] args) {
-        // Sans utiliser multproof
+        // Sans utiliser multproof,
+        // Donc si Alice ne respecte pas le protocole, Bob ne le sait pas
         Paillier systeme = new Paillier();
         Keys keys = systeme.keyGen(1024);
         BigInteger pk = keys.pk();
@@ -122,6 +137,7 @@ public class Multiplication {
         System.out.println("x * y = " + res);
 
         //En utilisant multProof
+        // Donc si Alice ne respecte pas le protocole, Bob quitte le protocole.
         val1 = 2345;
         val2 = 10230;
         System.out.println("x = " + val1);
