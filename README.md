@@ -87,6 +87,8 @@ Pour répondre à ce problème nous proposons deux protocoles, qui ont chacun le
 
 #### Protocole 1
 
+Voir implémentation classe CryptoMariage1
+
 On suppose que :
 - Le bracelet est fiable (**B** ne peut pas le pirater (protocole codé en dur, système de sécurité sur le bracelet empêchant Bob de l'ouvrir sans provoquer d'alarme, etc..)
 - Le bracelet dispose d'une faible puissance de calcul.
