@@ -7,7 +7,7 @@
 Voir code (classe Multiplication)
 
 #### Q2
-Par la propriété homomorphique de Paillier, on trouve retrouve facilement que a = eα + δ de par sa construction.  
+Par la propriété homomorphique de Paillier, on retrouve facilement que a = eα + δ de par sa construction.  
 De plus on a :  
 a' = Paillier.Decrypt(([β]^a [π]^−1 [γ]^−e mod n2 ))  
 => a' = aβ - π - eγ    Par les propriétés homomorphique de Paillier  
@@ -16,18 +16,17 @@ a' = Paillier.Decrypt(([β]^a [π]^−1 [γ]^−e mod n2 ))
 => a' = 0
 
 #### Q3
-Après le protocole, les seules informations décrypté qu'a obtenu Bob sont a et a'.  
+Après le protocole, les seules informations décryptées qu'a obtenu Bob sont a et a'.  
 Or nous avons montré à la question précédente que a' = 0 si Alice respecte le protocole, donc il ne peut pas en extraire
- d'infomation. Nous avons également montré que a = eα + δ. Or δ est choisi aléatoirement par Alice et la seule 
+ d'information. Nous avons également montré que a = eα + δ. Or δ est choisi aléatoirement par Alice et la seule 
  information que possède Bob est son encryption avec Pailler. Comme Paillier est sémantiquement sûr, il ne peut donc 
- obtenir aucune information sur δ, et donc de fait aucune information non plus sur α. Pour β et γ, il n'obtient que 
- leurs valeurs encrypté par Paillier et ne peut donc pas en tirer d'information.
+ obtenir aucune information sur δ, et donc de fait aucune information sur α. Pour β et γ, il n'obtient que 
+ leurs valeurs encryptées par Paillier et ne peut donc pas en tirer d'information.
 
 #### Q4
-En effectuant les vérification 4.a et 4.b, Bob encrypte a et a' en utilisant le r donné par la fonction de décryption au 
-lieu d'en regénérer un aléatoirement. Donc il doit normalement obtenir la même encryption que qu'Alice. Comme il compare
-cette encryption avec le résultat du calcul qu'est sensé avoir effectué Alice avant la décryption, Si a et a' encrypte les bonnes valeurs,
-il est sensé obtenir le même résultat.
+En effectuant les vérifications 4.a et 4.b, Bob encrypte a et a' en utilisant le r donné par la fonction de décryption au 
+lieu d'en regénérer un aléatoirement. Donc il doit normalement obtenir la même encryption qu'Alice. Comme il compare
+cette encryption avec le résultat du calcul qu'est sensé avoir effectué Alice avant la décryption, si a et a' encryptent les bonnes valeurs, il est sensé obtenir le même résultat.
 
 #### Q5
 Supposons que γ != αβ et que les vérifications 4.a et 4.b n'échouent pas :
@@ -51,13 +50,13 @@ e est choisi aléatoirement dans Z/nZ indépendament de c et d, donc la probabil
 
 
 #### Q6
-D'après la question précédente, si γ est différent de αβ et que les vérifications 4.a et 4.b sont valide, alors a' est différent de 0 avec une probabilité proche de 1.  
+D'après la question précédente, si γ est différent de αβ et que les vérifications 4.a et 4.b sont valides, alors a' est différent de 0 avec une probabilité proche de 1.  
 Or si a' est différent de 0, le protocole échoue.  
 Donc si γ est différent de αβ, le protocole échoue avec une probabilité proche de 1.
 
 #### Q7
 On peut facilement utiliser le protocole MultiProof dans le protocole Mutliplication pour sécuriser l'étape 2.  
-En effet cela permet à Bob d'ếtre sur que Alice lui envoie bien une encryption de (x + r)(y + s).  
+En effet cela permet à Bob d'ếtre sûr que Alice lui envoie bien une encryption de (x + r)(y + s).  
 Pour cela, il suffit d'appliquer le protocole MultiProof en prenant α = (x + r) et β = (y + s)
 
 ### Exercice 105
@@ -74,11 +73,11 @@ Pour arriver à se rapprocher autant que possible du cas idéal, nous proposons 
 - **B** génère un couple de clés privé/public pour Paillier et transmet la clé publique à **A**
 - **B** chiffre les valeurs et les envoie à **A**
 - **A** calcule chaque clause disjonctive séparément (les suites de . ^ . ^ .) avec la méthode suivante :
-- - Si il y a un ¬X alors Alice le remplacer par **Paillier.Encrypt(1) ⊝ X**. On obtient de cette manière une négation de X.
+- - Si il y a un ¬X alors Alice le remplace par **Paillier.Encrypt(1) ⊝ X**. On obtient de cette manière une négation de X.
 - - **A** calcule la somme des Xi et soustrait le nombre total de Xi (ex : X1 ⊕ X2 ⊕ X3 ⊝ 3 = X). La clause est donc vraie si et seulement si X = 0.
 En effet, la clause étant composée seulement de ^, X est vrai si X1, X2 et X3 sont vrai (X1 + X2 + X3 = 3).
 - Pour que **B** ne puisse pas obtenir d'information sur le résultat précis des clauses, **A** les multiplie par un nombre aléatoire pour brouiller les résultats faux.
-**B** pourra toujours savoir les clauses vérifier mais n'aura aucune information sur les clauses fausses.
+**B** pourra toujours connaitre les clauses vérifiées mais n'aura aucune information sur les clauses fausses.
 - Pour ne pas donner d'information sur le nombre de clauses, **A** renvoie les clauses calculées en les permuttant aléatoirement (et en ajoutant des clauses fausses (donc ≠ 0)
 - **B** décrypte chaque clause puis les multiplie entre elles, si le résultat final est **0** alors F(xi,..) = True
 
@@ -88,15 +87,15 @@ Par rapport au cas idéal, ce protocole présente certains défauts, mais il pr�
 
   
 Pour la sécurité des informations de Bob, ce protocole correspond parfaitement au cas idéal : En effet Alice n'obtient
-que des encryptions des valeurs de Bob, donc elle n'a aucun moyen d'en déduire les valeurs envoyé par Bob car le cryptosystème
+que des encryptions des valeurs de Bob, donc elle n'a aucun moyen d'en déduire les valeurs envoyées par Bob car le cryptosystème
 de Paillier est sémantiquement sûr.  
 Par contre avec ce protocole, Bob arrive à obtenir plus d'information sur la DNF que ce qu'il en obtient dans le cas idéal.
 En effet il peut pour chaque calcul de la DNF (exécution du protocole) obtenir le nombre exacte de clauses vraies.
-Comme il ne connait pas le nombre total de clause ni lequelles sont vraies, il lui est probablement impossible d'obtenir 
-des informations précises sur la DNF. Il peut donc seulement effectué des suppositions sur le contenu de certaines clauses. 
+Comme il ne connait pas le nombre total de clause ni lesquelles sont vraies, il lui est probablement impossible d'obtenir 
+des informations précises sur la DNF. Il peut donc seulement effectuer des suppositions sur le contenu de certaines clauses. 
 Mais il ne pourra pas avoir plus de certitudes que dans le cas idéal.
 
-Avec ce protocole, Alice peut se sentir lésé car Bob obtient plus d'information que dans le cas idéal, mais Bob devrait être satisfait par ce protocole.
+Avec ce protocole, Alice peut se sentir lésée car Bob obtient plus d'information que dans le cas idéal, mais Bob devrait être satisfait par ce protocole.
 
 
 ### Mariage cryptographique
