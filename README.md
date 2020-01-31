@@ -88,7 +88,7 @@ Pour répondre à ce problème nous proposons deux protocoles, qui ont chacun le
 #### Protocole 1
 
 On suppose que :
-- Le bracelet est fiable et que **B** ne peut pas le pirater (protocole codé en dur, système de sécurité sur le bracelet empêchant Bob de l'ouvrir sans provoquer d'alarme, etc..).
+- Le bracelet est fiable et que **B** ne peut pas le pirater (protocole codé en dur, système de sécurité sur le bracelet empêchant Bob de l'ouvrir sans provoquer d'alarme, Bob ne peut pas envoyer de message à la place du bracelet, etc..).
 - Le bracelet dispose d'une faible puissance de calcul.
 
 Protocole :
@@ -102,7 +102,7 @@ Limites : On suppose une puissance de calcul du bracelet de **B**, c'est notamme
 
 #### Protocole 2
 
-On suppose que bracelet dispose d'une faible puissance de calcul.
+On suppose de même que le bracelet est fiable, que **B** ne peut pas le pirater et qu'il dispose d'une faible puissance de calcul.
 
 Protocole :
 - **A** génère une paire de clés (pk, sk) <- Paillier.KeyGen().
