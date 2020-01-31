@@ -88,7 +88,7 @@ Pour répondre à ce problème nous proposons deux protocoles, qui ont chacun le
 #### Protocole 1
 
 On suppose que :
-- Le bracelet est fiable (**B** ne peut pas le pirater (protocole codé en dur, système de sécurité sur le bracelet empêchant Bob de l'ouvrir sans provoquer d'alarme, etc..)
+- Le bracelet est fiable et que **B** ne peut pas le pirater (protocole codé en dur, système de sécurité sur le bracelet empêchant Bob de l'ouvrir sans provoquer d'alarme, etc..).
 - Le bracelet dispose d'une faible puissance de calcul.
 
 Protocole :
@@ -106,11 +106,16 @@ On suppose que bracelet dispose d'une faible puissance de calcul.
 
 Protocole :
 - **A** génère une paire de clés (pk, sk) <- Paillier.KeyGen().
-- **A** envoie à **B** les encryptions : *XA, YA, XA² <- Paillier.Encrypt(xA², pk), YA² <- Paillier.Encrypt(yA², pk).*
-- **B** calcule et retourne sa distance² par rapport à **A** :
-*D² = Paillier.Encrypt((xA - xB)² + (yA - yB)²)*
-*D² = (xA - xB)² + (yA - yB)²*
-*D² = XA² + YA² + Paillier.Encrypt( xB² + yB², pk) + XA ⊗ (-2 xB) + YA ⊗ (-2 yB)*
+- **A** envoie à **B** les encryptions : 
+  - *XA <- Paillier.Encrypt(xA, pk)* 
+  - *YA <- Paillier.Encrypt(yA, pk)*
+  - *XA² <- Paillier.Encrypt(xA², pk)* 
+  - *YA² <- Paillier.Encrypt(yA², pk)* 
+- **B** calcule et retourne sa distance² par rapport à **A** : 
+  - *D² = Paillier.Encrypt((xA - xB)² + (yA - yB)²)* 
+  - *D² = Paillier.Encrypt(xA² + yA² + xB² + yB² - 2.xA.xB - 2.yA.yB)* 
+  - *D² = Paillier.Encrypt(xA²) + Paillier.Encrypt(yA²) + Paillier.Encrypt(xB² + yB²) + Paillier.Encrypt(-2.xA.xB) + Paillier.Encrypt(-2.yA.yB)*
+  - *D² = XA² + YA² + Paillier.Encrypt( xB² + yB²) + (-2 xB).XA + (-2 yB).YA* 
 - **A** décrypte *D²* et vérifie si celle-ci est inférieure à 10 000 (100²)
 
 Limites : 
