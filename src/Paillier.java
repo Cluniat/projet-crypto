@@ -30,13 +30,17 @@ public class Paillier {
         return new Keys(n, rho);
     }
 
+    public static BigInteger encrypt_with_r(BigInteger message, BigInteger pk, BigInteger r) {
+        return message.multiply(pk)
+                .add(BigInteger.ONE)
+                .multiply(r.modPow(pk, pk.pow(2)))
+                .mod(pk.pow(2));
+    }
+
     public static BigInteger encrypt(BigInteger message, Keys keys) {
         Random rand = new Random();
         BigInteger r = new BigInteger(keys.pk().bitLength(), 1, rand).mod(keys.pk());
-        return message.multiply(keys.pk())
-                .add(BigInteger.ONE)
-                .multiply(r.modPow(keys.pk(), keys.pk().pow(2)))
-                .mod(keys.pk().pow(2));
+        return encrypt_with_r(message, keys.pk(), r);
     }
 
     public static BigInteger decrypt(BigInteger encryptedMessage, Keys keys) {
@@ -45,6 +49,10 @@ public class Paillier {
                 .mod(keys.pk().pow(2))
                 .subtract(BigInteger.ONE)
                 .divide(keys.pk());
+    }
+
+    public static BigInteger findR(BigInteger encryptedMessage, Keys keys) {
+        return encryptedMessage.modPow(keys.sk(), keys.pk());
     }
 
     // ====================== OPERATIONS ===========================
