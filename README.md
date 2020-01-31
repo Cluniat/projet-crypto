@@ -105,8 +105,14 @@ Limites : On suppose une puissance de calcul du bracelet de **B**, c'est notamme
 On suppose que bracelet dispose d'une faible puissance de calcul.
 
 Protocole :
-- **A** envoie à **B** les encryptions : XA, YA, XA² (= Paillier.Encrypt(xA²) ), YA².
-- **B** calcule et renvoie *D = XA² + YA² + Paillier.Encrypt( xB² + yB² ) + XA ⊗ (-2 xB) + YA ⊗ (-2 yB)* (sa distance par rapport à **A**)
-- **A** décrypte *D* et vérifie si celle-ci est inférieure à 10 000 (100²)
+- **A** génère une paire de clés (pk, sk) <- Paillier.KeyGen().
+- **A** envoie à **B** les encryptions : *XA, YA, XA² <- Paillier.Encrypt(xA², pk), YA² <- Paillier.Encrypt(yA², pk).*
+- **B** calcule et retourne sa distance² par rapport à **A** :
+*D² = Paillier.Encrypt((xA - xB)² + (yA - yB)²)*
+*D² = (xA - xB)² + (yA - yB)²*
+*D² = XA² + YA² + Paillier.Encrypt( xB² + yB², pk) + XA ⊗ (-2 xB) + YA ⊗ (-2 yB)*
+- **A** décrypte *D²* et vérifie si celle-ci est inférieure à 10 000 (100²)
 
-Problème : **A** connaît sa distance avec **B**, ce qui donne une information sur la position de **B**, ce que l'on peut vouloir éviter, si celui-ci n'est pas à moins de 100 mètres de **A**.
+Limites : 
+- On suppose une puissance de calcul du bracelet de **B**. 
+- **A** connaît sa distance avec **B**, ce qui donne une information sur la position de **B**, ce que l'on peut vouloir éviter, si celui-ci n'est pas à moins de 100 mètres de **A**.
